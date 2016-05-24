@@ -21,13 +21,13 @@ and open the template in the editor.
             
             for ($i = 0; $i<$num_filas; $i++){
                 $resultado = $consulta ->fetch_array();
-                $listaPreguntas[$i][0]= $resultado['id'];
+                $listaPreguntas[$i][0]= $resultado['numero'];
                 $listaPreguntas[$i][1]= $resultado['tema'];
                 $listaPreguntas[$i][2]= $resultado['enunciado'];
-                $listaPreguntas[$i][3]= $resultado['R1'];
-                $listaPreguntas[$i][4]= $resultado['R2'];
-                $listaPreguntas[$i][5]= $resultado['R3'];
-                $listaPreguntas[$i][6]= $resultado['R4'];
+                $listaPreguntas[$i][3]= $resultado['r1'];
+                $listaPreguntas[$i][4]= $resultado['r2'];
+                $listaPreguntas[$i][5]= $resultado['r3'];
+                $listaPreguntas[$i][6]= $resultado['r4'];
                 $listaPreguntas[$i][7]= $resultado['correcta'];
             }
            
