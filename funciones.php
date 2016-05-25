@@ -7,4 +7,5 @@ function conectaBBDD(){
     return $conexion_mysql;
 }
 
+    
 ?>
