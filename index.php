@@ -9,6 +9,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <title>QUIZZ EJEMPLO PHP</title>
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+         <link rel="stylesheet" href="js/jquery.raty.css" />
     </head>
     <body>
         <?php
@@ -64,7 +65,7 @@ and open the template in the editor.
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <br><br>
-                    <button id="enunciado" class="btn btn-block btn-warning disabled"></button>
+                    <h3 align="center" id="enunciado"  ></h3>
                     <br><br>
                     <button id="r1" class="btn btn-block btn-primary " ></button> 
                     
@@ -82,6 +83,7 @@ and open the template in the editor.
         </div>
         <div id="cargaTest"></div>
         
+        <script src="js/jquery.raty.js"></script>
         <script src="js/jquery-1.12.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>

@@ -39,7 +39,13 @@ include('./funciones.php');
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <br><br>
-                    <button id="enunciado" class="btn btn-block btn-warning disabled" ></button>
+<!--                   <div id="estrellas" class="btn btn-primary centrado disabled " style="color: #FFB800;"></div>-->
+            <!-- /header -->
+             <br><br>
+            <div id="progreso" class="btn btn-primary btn-block disabled" ></div>
+                 
+                    <br><br>
+                    <h3 align="center" id="enunciado" ></h3>
                     <br><br>
                     <button id="r1" class="btn btn-block btn-primary " ></button> 
                     
@@ -48,14 +54,51 @@ include('./funciones.php');
                     <button id="r3" class="btn btn-block btn-primary " ></button> 
                                                                            
                     <button id="r4" class="btn btn-block btn-primary " ></button> 
-                    <br><br>
-                    <button id="siguiente" class="btn btn-block btn-info "  >Siguiente</button> 
+                    <br><br>                  
                 </div>
                 <div class="col-md-3"></div>
             </div>
+             <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">                
+                    <button id="siguiente" class="btn btn-block btn-info "  onclick="reloadPage()"  >Elegir TEMA</button> 
+                </div>
+                <div class="col-md-3">                
+                    <button id="siguiente" class="btn btn-block btn-info "  >Reiniciar Nivel</button> 
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+    </div>
       <script src="js/jquery-1.12.0.min.js"></script>
+      <script src="js/jquery.raty.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        
         <script>
+                  
+                   var juegoActivo = true;
+                   var numEstrellas;
+                    var vidas;
+                           
+                $(document).ready(function(){
+            arrayPreguntas = <?php echo json_encode($listaPreguntas);?>;
+            $('#progreso').raty({ readOnly: true, score: 0, number:10, halfShow : true});
+            $('#estrellas').hide();
+            vidas = 10;
+            numEstrellas = 0;
+            cambiaPregunta();
+            
+            
+        });
+//        
+//    function cambiaEstrellasGrandes(numEstrellas){
+//        $('#estrella').raty({ readOnly: true, score: numEstrellas, number:10, halfShow : true, starType : 'i'});   
+//        
+//         $('#estrella').find('i').removeClass("star-off-png").addClass("star-on.png");
+//            
+//        }   
+//        
+ 
+      
     function cambiaPregunta(){
          var arrayPreguntas;
         
@@ -81,31 +124,51 @@ include('./funciones.php');
                         comprobarRespuesta(3, $(this));
                     });  
                 }
-                
-                $(document).ready(function(){
-            arrayPreguntas = <?php echo json_encode($listaPreguntas);?>;
-            
-            cambiaPregunta();
-            
-            
-        });
-        
+ 
         
          function reseteaRespuestas(){
             document.getElementById("r1").className = "btn btn-block btn-primary";
             document.getElementById("r2").className = "btn btn-block btn-primary";
             document.getElementById("r3").className = "btn btn-block btn-primary";
             document.getElementById("r4").className = "btn btn-block btn-primary";
+            juegoActivo = true;
         }
+        
+        function reloadPage(){
+            window.location.reload();
+         }
 
         function comprobarRespuesta( n1, boton){
+            
+            //Al cambiar la respuesta esperamos un segundo hasta colocar la nueva pregunta
+            //en el caso de haber acertado para que no puedas contestar a mas preguntas mientras se muestra que 
+            //la respuesta esta correcta y se espera a que cambien ponemos una variable que ejecutamos al contestar bien en false
+            //y al mostrar las nuevas preguntas en true, de este modo nos protegemos de si ya hemos contestado bien seleccionar otra opcion
+            if(juegoActivo == true){
             if (arrayPreguntas[pregunta][8] == (listaRespuestas[n1]-3)){
-                boton.removeClass("btn-primary").addClass("btn-success");
+                boton.removeClass("btn-primary").addClass("btn-success");              
+                juegoActivo = false;
+                numEstrellas++;
+               $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10 });
+//                $('#estrellas').show());
+                //ponemos un delay en estos dos metodos porque sin el daba un error al hacerlo tan rapido que 
+                //pasaba a la siguiente pregunta instantaneamente y se clickeaba la nueva opcion de donde acabaras de acertar
+                //ademas no se veia apenas el cambio de color del boton a verde cuando acertabas
                 setTimeout( cambiaPregunta2, 1000 );
                 setTimeout( reseteaRespuestas, 1000 );
+                
+                
             }
             else{
                 boton.removeClass("btn-primary").addClass("btn-danger");
+                vidas--;
+                if (vidas<=0){
+                    $('#container').load('gameOver.php', {
+                 
+              });
+                }
+                
+            }
             }
         }
 
