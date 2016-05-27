@@ -1,13 +1,17 @@
 <?php
 
+//Recibimos dos varibales de index.php que con el tema que el usuario ha elegido y la dificultad 
  $temaSeleccionado = $_POST["temaSeleccionado"];
+ $nivelSeleccionado = $_POST["nivelSeleccionado"];
  
 include('./funciones.php');
             $mysqli = conectaBBDD();
             
    
-        
-            $consulta = $mysqli -> query("SELECT * FROM preguntas where tema = '$temaSeleccionado' ;");
+            //A la hora de sacar las preguntas le pasamos a la consulta la variable del tema y la difcultad, con la dificultad obtendremos
+            //las preguntas para esa dificultad y las inferiores de este modo si selecciona difultad 1 solo recira de esta y si selecciona 
+            //dificultad 5 se utilizaran de 1,2,3,4 y 5
+            $consulta = $mysqli -> query("SELECT * FROM preguntas where tema = '$temaSeleccionado' and nivel <= $nivelSeleccionado ;");
             $num_filas = $consulta -> num_rows;
             $listaPreguntas = array();
             
@@ -40,7 +44,7 @@ include('./funciones.php');
                 <div class="col-md-3">   
                     <br>              
                     <br>
-                     <div class="btn btn-primary btn-block disabled"> VIDAS</div>
+                     <div class="btn btn-primary btn-block disabled"> VIDAS </div>
                    <div id="estrella" class="btn btn-primary btn-block disabled"></div>                 
                 </div>
                  <div class="col-md-3"> 
@@ -86,11 +90,14 @@ include('./funciones.php');
                   
                    var juegoActivo = true;
                    var numEstrellas;
-                    var vidas ; vidas = 3;
+                    var vidas;
                     var aciertos;
-                           
+                    
+                    //Al cargar la pagina en los div progreso y estrella cargo a mis raty, uno se encargara de llevar
+                    //el conteo de las vidas y otro el de la puntuación 
                 $(document).ready(function(){
             arrayPreguntas = <?php echo json_encode($listaPreguntas);?>;
+            vidas = 3;
             $('#progreso').raty({ readOnly: true, score: 0, number:10, halfShow : true});
             $('#estrella').raty({
             readOnly: true,
@@ -110,7 +117,8 @@ include('./funciones.php');
 
 
  
-      
+    //Metodo para cambiar los botones y el enunciado a la pregunta y respuesta que se ha seleccionado y 
+    //añadirles el metodo que luego cada vez que clickeemos sobre estos comprueba si la respues es la correcta
     function cambiaPregunta(){
          var arrayPreguntas;
         
@@ -215,7 +223,7 @@ include('./funciones.php');
                     $('#estrella').raty({
                         readOnly: true,
                         score: vidas,
-                        number:3,
+                        number: 3,
                         starOn  : 'images/like.png',
                         starOff : 'images/dislike.png'
                     });
