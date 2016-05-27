@@ -90,6 +90,7 @@ include('./funciones.php');
                   
                    var juegoActivo = true;
                    var numEstrellas;
+                   var vidasIniciales;
                     var vidas;
                     var aciertos;
                     
@@ -97,12 +98,13 @@ include('./funciones.php');
                     //el conteo de las vidas y otro el de la puntuación 
                 $(document).ready(function(){
             arrayPreguntas = <?php echo json_encode($listaPreguntas);?>;
-            vidas = 3;
-            $('#progreso').raty({ readOnly: true, score: 0, number:10, halfShow : true});
+            vidas = 10;
+            vidasIniciales = vidas;
+            $('#progreso').raty({ readOnly: true, score: 0, number:10,  starOn: 'images/trophy.png', starOff : 'images/cup.png'});
             $('#estrella').raty({
             readOnly: true,
             score: vidas,
-            number:3,
+            number: vidasIniciales,
             starOn  : 'images/like.png',
             starOff : 'images/dislike.png'
 });
@@ -154,16 +156,16 @@ include('./funciones.php');
             juegoActivo = true;
         }
         
-        function reiniciarNivel(){
-             vidas = 3;
+        function reiniciarNivel(){         
             aciertos = 0;
             numEstrellas = 0;
-            $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10 });
+            reseteaRespuestas();
+            $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10, starOn: 'images/trophy.png', starOff : 'images/cup.png' });
             cambiaPregunta();
            $('#estrella').raty({
             readOnly: true,
             score: vidas,
-            number:3,
+            number: vidasIniciales,
             starOn  : 'images/like.png',
             starOff : 'images/dislike.png'
 });
@@ -197,7 +199,7 @@ include('./funciones.php');
              }
                  
                 numEstrellas++;
-               $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10 });
+               $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10, starOn: 'images/trophy.png', starOff : 'images/cup.png' });
 
                 //ponemos un delay en estos dos metodos porque sin el daba un error al hacerlo tan rapido que 
                 //pasaba a la siguiente pregunta instantaneamente y se clickeaba la nueva opcion de donde acabaras de acertar
@@ -223,7 +225,7 @@ include('./funciones.php');
                     $('#estrella').raty({
                         readOnly: true,
                         score: vidas,
-                        number: 3,
+                        number: vidasIniciales,
                         starOn  : 'images/like.png',
                         starOff : 'images/dislike.png'
                     });
@@ -245,15 +247,15 @@ include('./funciones.php');
                     }); 
             $('#r2').html(arrayPreguntas[pregunta][listaRespuestas[1]])
                    .click(function(){
-                        comprobarRespuesta(0, $(this));
+                        comprobarRespuesta(1, $(this));
                     });
             $('#r3').html(arrayPreguntas[pregunta][listaRespuestas[2]])
                    .click(function(){
-                        comprobarRespuesta(0, $(this));
+                        comprobarRespuesta(2, $(this));
                     });
             $('#r4').html(arrayPreguntas[pregunta][listaRespuestas[3]])
                   .click(function(){
-                        comprobarRespuesta(0, $(this));
+                        comprobarRespuesta(3, $(this));
                     });      
 }    
                       </script>
