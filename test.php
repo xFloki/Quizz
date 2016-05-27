@@ -98,7 +98,7 @@ include('./funciones.php');
                     //el conteo de las vidas y otro el de la puntuación 
                 $(document).ready(function(){
             arrayPreguntas = <?php echo json_encode($listaPreguntas);?>;
-            vidas = 10;
+            vidas = 5;
             vidasIniciales = vidas;
             $('#progreso').raty({ readOnly: true, score: 0, number:10,  starOn: 'images/trophy.png', starOff : 'images/cup.png'});
             $('#vidas').raty({
