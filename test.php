@@ -45,7 +45,7 @@ include('./funciones.php');
                     <br>              
                     <br>
                      <div class="btn btn-primary btn-block disabled"> VIDAS </div>
-                   <div id="estrella" class="btn btn-primary btn-block disabled"></div>                 
+                   <div id="vidas" class="btn btn-primary btn-block disabled"></div>                 
                 </div>
                  <div class="col-md-3"> 
                      <br><br>
@@ -101,7 +101,7 @@ include('./funciones.php');
             vidas = 10;
             vidasIniciales = vidas;
             $('#progreso').raty({ readOnly: true, score: 0, number:10,  starOn: 'images/trophy.png', starOff : 'images/cup.png'});
-            $('#estrella').raty({
+            $('#vidas').raty({
             readOnly: true,
             score: vidas,
             number: vidasIniciales,
@@ -160,11 +160,11 @@ include('./funciones.php');
             aciertos = 0;
             numEstrellas = 0;
             reseteaRespuestas();
-            $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10, starOn: 'images/trophy.png', starOff : 'images/cup.png' });
+            $('#progreso').raty({ readOnly: true, score: 0, number:10, starOn: 'images/trophy.png', starOff : 'images/cup.png' });
             cambiaPregunta();
-           $('#estrella').raty({
+           $('#vidas').raty({
             readOnly: true,
-            score: vidas,
+            score: vidasIniciales,
             number: vidasIniciales,
             starOn  : 'images/like.png',
             starOff : 'images/dislike.png'
@@ -222,7 +222,7 @@ include('./funciones.php');
               });
                 } else {
                  //Nos actualiza el raty de las vidas en funcion de cuantas nos queden   
-                    $('#estrella').raty({
+                    $('#vidas').raty({
                         readOnly: true,
                         score: vidas,
                         number: vidasIniciales,
@@ -235,24 +235,31 @@ include('./funciones.php');
             }
             }
         }
-
+          
+          //Le añaddimos a los botones el metodo de comprobar las Respuestas, antes de hacerlo hacemos un unbind a cada boton
+          //puesto que alguno ya lo tendran ya que se hace para no contestar 2 veces a la misma pregunta, y si no se lo quitamos a todos
+          // a la hora de añadirle el metodo las preguntas que no se han conestestado tendran dos veces el mismo metodo
          function cambiaPregunta2(){
             pregunta = Math.floor(Math.random() * <?php echo sizeof($listaPreguntas);?>); 
             $('#enunciado').html(arrayPreguntas[pregunta][3]);
             
             listaRespuestas = desordena(listaRespuestas);
+           $('#r1').unbind();
             $('#r1').html(arrayPreguntas[pregunta][listaRespuestas[0]])
             .click(function(){
                         comprobarRespuesta(0, $(this));
                     }); 
+              $('#r2').unbind();       
             $('#r2').html(arrayPreguntas[pregunta][listaRespuestas[1]])
                    .click(function(){
                         comprobarRespuesta(1, $(this));
                     });
+             $('#r3').unbind();        
             $('#r3').html(arrayPreguntas[pregunta][listaRespuestas[2]])
                    .click(function(){
                         comprobarRespuesta(2, $(this));
                     });
+             $('#r4').unbind();        
             $('#r4').html(arrayPreguntas[pregunta][listaRespuestas[3]])
                   .click(function(){
                         comprobarRespuesta(3, $(this));
