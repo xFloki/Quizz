@@ -35,17 +35,26 @@ include('./funciones.php');
         
 
 <div class="container" id ="container">
+    <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">   
+                    <br>              
+                    <br>
+                     <div class="btn btn-primary btn-block disabled"> VIDAS</div>
+                   <div id="estrella" class="btn btn-primary btn-block disabled"></div>                 
+                </div>
+                 <div class="col-md-3"> 
+                     <br><br>
+                     <div class="btn btn-primary btn-block disabled"> PUNTUACION</div>
+            <div id="progreso" class="btn btn-primary btn-block disabled" ></div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
                     <br><br>
-<!--                   <div id="estrellas" class="btn btn-primary centrado disabled " style="color: #FFB800;"></div>-->
-            <!-- /header -->
-             <br><br>
-            <div id="progreso" class="btn btn-primary btn-block disabled" ></div>
-                 
-                    <br><br>
-                    <h3 align="center" id="enunciado" ></h3>
+                    <h3  align="center" id="enunciado" ></h3>
                     <br><br>
                     <button id="r1" class="btn btn-block btn-primary " ></button> 
                     
@@ -64,7 +73,7 @@ include('./funciones.php');
                     <button id="siguiente" class="btn btn-block btn-info "  onclick="reloadPage()"  >Elegir TEMA</button> 
                 </div>
                 <div class="col-md-3">                
-                    <button id="siguiente" class="btn btn-block btn-info "  >Reiniciar Nivel</button> 
+                    <button id="siguiente" class="btn btn-block btn-info " onclick="reiniciarNivel()"  >Reiniciar Nivel</button> 
                 </div>
                 <div class="col-md-3"></div>
             </div>
@@ -77,26 +86,29 @@ include('./funciones.php');
                   
                    var juegoActivo = true;
                    var numEstrellas;
-                    var vidas;
+                    var vidas ; vidas = 3;
+                    var aciertos;
                            
                 $(document).ready(function(){
             arrayPreguntas = <?php echo json_encode($listaPreguntas);?>;
             $('#progreso').raty({ readOnly: true, score: 0, number:10, halfShow : true});
-            $('#estrellas').hide();
-            vidas = 10;
+            $('#estrella').raty({
+            readOnly: true,
+            score: vidas,
+            number:3,
+            starOn  : 'images/like.png',
+            starOff : 'images/dislike.png'
+});
+          
+            
+            aciertos = 0;
             numEstrellas = 0;
             cambiaPregunta();
             
             
         });
-//        
-//    function cambiaEstrellasGrandes(numEstrellas){
-//        $('#estrella').raty({ readOnly: true, score: numEstrellas, number:10, halfShow : true, starType : 'i'});   
-//        
-//         $('#estrella').find('i').removeClass("star-off-png").addClass("star-on.png");
-//            
-//        }   
-//        
+
+
  
       
     function cambiaPregunta(){
@@ -134,10 +146,32 @@ include('./funciones.php');
             juegoActivo = true;
         }
         
+        function reiniciarNivel(){
+             vidas = 3;
+            aciertos = 0;
+            numEstrellas = 0;
+            $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10 });
+            cambiaPregunta();
+           $('#estrella').raty({
+            readOnly: true,
+            score: vidas,
+            number:3,
+            starOn  : 'images/like.png',
+            starOff : 'images/dislike.png'
+});
+            
+        }
+        
         function reloadPage(){
             window.location.reload();
          }
-
+         function ganador(){
+             
+                    $('#container').load('win.php', {
+                 
+              });
+                
+         }
         function comprobarRespuesta( n1, boton){
             
             //Al cambiar la respuesta esperamos un segundo hasta colocar la nueva pregunta
@@ -148,9 +182,15 @@ include('./funciones.php');
             if (arrayPreguntas[pregunta][8] == (listaRespuestas[n1]-3)){
                 boton.removeClass("btn-primary").addClass("btn-success");              
                 juegoActivo = false;
+                 aciertos++;
+                 //Si es la décima pregunta que aciertas ganas el quizz
+                 if (aciertos==10){
+                 setTimeout( ganador, 1000 );
+             }
+                 
                 numEstrellas++;
                $('#progreso').raty({ readOnly: true, score: numEstrellas, number:10 });
-//                $('#estrellas').show());
+
                 //ponemos un delay en estos dos metodos porque sin el daba un error al hacerlo tan rapido que 
                 //pasaba a la siguiente pregunta instantaneamente y se clickeaba la nueva opcion de donde acabaras de acertar
                 //ademas no se veia apenas el cambio de color del boton a verde cuando acertabas
@@ -160,13 +200,27 @@ include('./funciones.php');
                 
             }
             else{
+                
                 boton.removeClass("btn-primary").addClass("btn-danger");
+                //Cada vez que fallemos una pregunta le quitamos los evento de este modo, no podremos clickear dos veces sobre la 
+                //misma respuesta, mas tarde si acertamos la pregunta le volveremos a pasar el evento a los botones
+                boton.unbind();
                 vidas--;
                 if (vidas<=0){
                     $('#container').load('gameOver.php', {
                  
               });
+                } else {
+                 //Nos actualiza el raty de las vidas en funcion de cuantas nos queden   
+                    $('#estrella').raty({
+                        readOnly: true,
+                        score: vidas,
+                        number:3,
+                        starOn  : 'images/like.png',
+                        starOff : 'images/dislike.png'
+                    });
                 }
+                
                 
             }
             }
@@ -178,13 +232,21 @@ include('./funciones.php');
             
             listaRespuestas = desordena(listaRespuestas);
             $('#r1').html(arrayPreguntas[pregunta][listaRespuestas[0]])
-                  ;
+            .click(function(){
+                        comprobarRespuesta(0, $(this));
+                    }); 
             $('#r2').html(arrayPreguntas[pregunta][listaRespuestas[1]])
-                   ;
+                   .click(function(){
+                        comprobarRespuesta(0, $(this));
+                    });
             $('#r3').html(arrayPreguntas[pregunta][listaRespuestas[2]])
-                   ;
+                   .click(function(){
+                        comprobarRespuesta(0, $(this));
+                    });
             $('#r4').html(arrayPreguntas[pregunta][listaRespuestas[3]])
-                   ;       
+                  .click(function(){
+                        comprobarRespuesta(0, $(this));
+                    });      
 }    
                       </script>
 
